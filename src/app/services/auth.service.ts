@@ -1,22 +1,25 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, tap } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { BehaviorSubject, tap } from 'rxjs';
+const serverUrl: string = 'https://mkwebd-piiquante-back.cyclic.app/';
+const serverUrlAuth: string = `${serverUrl}api/auth/`;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   isAuth$ = new BehaviorSubject<boolean>(false);
   private authToken = '';
   private userId = '';
 
-  constructor(private http: HttpClient,
-              private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   createUser(email: string, password: string) {
-    return this.http.post<{ message: string }>('https://mkwebd-piiquante-back.herokuapp.com/api/auth/signup', {email: email, password: password});
+    return this.http.post<{ message: string }>(`${serverUrlAuth}signup`, {
+      email: email,
+      password: password,
+    });
   }
 
   getToken() {
@@ -28,13 +31,18 @@ export class AuthService {
   }
 
   loginUser(email: string, password: string) {
-    return this.http.post<{ userId: string, token: string }>('https://mkwebd-piiquante-back.herokuapp.com/api/auth/login', {email: email, password: password}).pipe(
-      tap(({ userId, token }) => {
-        this.userId = userId;
-        this.authToken = token;
-        this.isAuth$.next(true);
+    return this.http
+      .post<{ userId: string; token: string }>(`${serverUrlAuth}login`, {
+        email: email,
+        password: password,
       })
-    );
+      .pipe(
+        tap(({ userId, token }) => {
+          this.userId = userId;
+          this.authToken = token;
+          this.isAuth$.next(true);
+        })
+      );
   }
 
   logout() {
@@ -43,5 +51,4 @@ export class AuthService {
     this.isAuth$.next(false);
     this.router.navigate(['login']);
   }
-
 }
