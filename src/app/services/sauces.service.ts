@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, mapTo, of, Subject, tap, throwError } from 'rxjs';
 import { Sauce } from '../models/Sauce.model';
 import { AuthService } from './auth.service';
-const serverUrl: string = 'https://mkwebd-piiquante-back.cyclic.app/';
+const serverUrl: string = 'https://server.kevinmas.com/piiquante/';
 const serverUrlSauces: string = `${serverUrl}api/sauces/`;
 
 @Injectable({
